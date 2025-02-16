@@ -1,0 +1,25 @@
+spring:
+    application:
+        name: data-ingestion
+
+    kafka:
+        producer:
+            bootstrap-servers: localhost:9092, localhost:9094
+            acks: all
+            properties:
+              delivery:
+                  timeout:
+                      ms: 20000
+              linger:
+                  ms: 0
+              request:
+                  timeout:
+                      ms: 10000
+
+
+server:
+    port: 0
+
+logging:
+    level:
+        root: info

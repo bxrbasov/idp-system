@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: data-processing
+
+    kafka:
+      consumer:
+          bootstrap-servers:
+
+logging:
+    level:
+        root: info
