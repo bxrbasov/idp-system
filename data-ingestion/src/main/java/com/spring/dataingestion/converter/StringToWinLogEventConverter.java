@@ -1,6 +1,6 @@
 package com.spring.dataingestion.converter;
 
-import com.spring.dataingestion.event.WinLogEvent;
+import com.spring.core.event.WinLogEvent;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;

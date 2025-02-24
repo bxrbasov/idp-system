@@ -1,16 +1,16 @@
-package com.spring.dataprocessing.event.consume;
+package com.spring.core.event;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode
 @ToString
 @Builder
-public class WinLog {
+@AllArgsConstructor
+@NoArgsConstructor
+public class WinLogEvent {
     private String message;
     private Integer id;
     private Integer version;

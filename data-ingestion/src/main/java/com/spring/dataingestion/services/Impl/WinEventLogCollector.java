@@ -1,22 +1,24 @@
 package com.spring.dataingestion.services.Impl;
 
-import com.spring.dataingestion.producer.Impl.KafkaProducer;
+import com.spring.dataingestion.producer.Impl.WinLogEventProducer;
 import com.spring.dataingestion.services.SystemLogCollector;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 @Service
+@Lazy
 @RequiredArgsConstructor
 public class WinEventLogCollector implements SystemLogCollector {
 
     private static final Logger log = LogManager.getLogger(WinEventLogCollector.class);
     private static final String command = "Get-WinEvent -LogName \"System\", \"Application\" | Select-Object -First 1 |Format-List *";
 
-    private final KafkaProducer kafkaProducer;
+    private final WinLogEventProducer winLogEventProducer;
     private Thread thread;
 
     @Override
@@ -34,7 +36,7 @@ public class WinEventLogCollector implements SystemLogCollector {
                 String source = executePowerShellCommand(command);
                 log.atInfo().log(source);
 
-                kafkaProducer.sendLogEvent(source);
+                winLogEventProducer.send(source);
                 try {
                     log.atInfo().log("Waiting for command...");
                     Thread.sleep(1000);

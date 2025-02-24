@@ -1,15 +1,14 @@
-package com.spring.dataprocessing.event.consume;
+package com.spring.core.event;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @EqualsAndHashCode
 @ToString
 @Builder
-public class WinTraffic {
+@AllArgsConstructor
+@NoArgsConstructor
+public class WinTrafficEvent {
     // Ethernet Header:
     private String EthernetDestinationAddress;
     private String EthernetSourceAddress;

@@ -1,18 +1,20 @@
 package com.spring.dataingestion.services.Impl;
 
-import com.spring.dataingestion.producer.Impl.KafkaProducer;
+import com.spring.dataingestion.producer.Impl.WinTrafficEventProducer;
 import com.spring.dataingestion.services.NetworkTrafficCapture;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 @Service
+@Lazy
 @RequiredArgsConstructor
 public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
 
@@ -21,7 +23,7 @@ public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final List<PcapHandle> handles = new ArrayList<>();
 
-    private final KafkaProducer kafkaProducer;
+    private final WinTrafficEventProducer winTrafficEventProducer;
     private Thread thread;
 
     @Override
@@ -59,12 +61,8 @@ public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
             for (PcapHandle handle : handles) {
                 try (handle) {
                     handle.breakLoop();
-                    log.atInfo().log("Break loop completed.");
                 } catch (NotOpenException e) {
-                    log.atError().log("Failed to close handle interface: {}", e.getMessage());
-                    throw new RuntimeException(e);
-                } finally {
-                    log.atInfo().log("Handle interface is closed.");
+                    log.atError().log("Close handle interface: {}", e.getMessage());
                 }
             }
         }
@@ -98,7 +96,7 @@ public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
                     handle.loop(-1, packetListener);
                     log.atInfo().log("Loop completed.");
                 } catch (PcapNativeException | InterruptedException | NotOpenException e) {
-                    log.atWarn().log("Failed to loop packet by handle: {}", e.getMessage());
+                    log.atInfo().log("Failed to loop packet by handle.");
                 }
                 return handle;
             });
@@ -149,7 +147,7 @@ public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
     }
 
     private PacketListener getPacketListener() {
-        PacketListener packetListener = packet -> {
+        return packet -> {
             EthernetPacket ethernetPacket = packet.get(EthernetPacket.class);
             if (ethernetPacket != null) {
 
@@ -161,7 +159,7 @@ public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
                         String source = String.valueOf(packet);
                         log.atInfo().log("TCP packet recieved:\n{}", source);
 
-                        kafkaProducer.sendTrafficEvent(source);
+                        winTrafficEventProducer.send(source);
                     }
 
                     UdpPacket udpPacket = packet.get(UdpPacket.class);
@@ -169,11 +167,10 @@ public class WinPcapNetworkTrafficCapture implements NetworkTrafficCapture {
                         String source = String.valueOf(packet);
                         log.atInfo().log("UDP packet recieved:\n{}", source);
 
-                        kafkaProducer.sendTrafficEvent(source);
+                        winTrafficEventProducer.send(source);
                     }
                 }
             }
         };
-        return packetListener;
     }
 }
