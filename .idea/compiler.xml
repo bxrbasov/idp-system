@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="idp-system.core.test" />
+        <module name="idp-system.data-processing.main" />
+        <module name="idp-system.core.main" />
+        <module name="idp-system.detection-engine.main" />
+        <module name="idp-system.data-ingestion.test" />
+        <module name="idp-system.detection-engine.test" />
+        <module name="idp-system.data-processing.test" />
+        <module name="idp-system.data-ingestion.main" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel target="21">
       <module name="core" target="21" />
       <module name="core.main" target="21" />

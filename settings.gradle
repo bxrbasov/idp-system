@@ -1,0 +1,6 @@
+rootProject.name = 'idp-system'
+
+include 'core'
+include 'data-ingestion'
+include 'data-processing'
+include 'detection-engine'

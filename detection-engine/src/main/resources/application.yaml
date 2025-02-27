@@ -1,0 +1,28 @@
+spring:
+    application:
+        name: detection-engine
+
+    kafka:
+        consumer:
+            bootstrap-servers: localhost:9092, localhost:9094, localhost:9096
+            group-id: traffic-events
+            properties:
+                spring.json.trusted.packages: com.spring.core.event
+
+        producer:
+            bootstrap-servers: localhost:9092, localhost:9094, localhost:9096
+            acks: all
+            properties:
+                delivery:
+                    timeout:
+                        ms: 20000
+                linger:
+                    ms: 0
+                request:
+                    timeout:
+                        ms: 10000
+                spring. json.trusted.packages: com.spring.core.event
+
+logging:
+    level:
+        root: info
